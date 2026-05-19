@@ -38,18 +38,27 @@
       <el-table-column label="拼音" align="center" prop="pinyin" min-width="120" />
       <el-table-column label="开通" align="center" width="110">
         <template #default="{ row }">
-          <el-switch v-model="row.opened" @change="handleUpdate(row)" />
+          <el-switch
+            v-model="row.opened"
+            v-hasPermi="['tutor:city:update']"
+            @change="handleUpdate(row)"
+          />
         </template>
       </el-table-column>
       <el-table-column label="热门" align="center" width="110">
         <template #default="{ row }">
-          <el-switch v-model="row.hot" @change="handleUpdate(row)" />
+          <el-switch
+            v-model="row.hot"
+            v-hasPermi="['tutor:city:update']"
+            @change="handleUpdate(row)"
+          />
         </template>
       </el-table-column>
       <el-table-column label="排序" align="center" width="140">
         <template #default="{ row }">
           <el-input-number
             v-model="row.sort"
+            v-hasPermi="['tutor:city:update']"
             :min="0"
             :max="9999"
             controls-position="right"
