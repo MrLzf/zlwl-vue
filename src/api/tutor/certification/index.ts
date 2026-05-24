@@ -1,5 +1,12 @@
 import request from '@/config/axios'
 
+export interface TutorCertificationPageReqVO extends PageParam {
+  userId?: number | string
+  realName?: string
+  status?: number
+  createTime?: string[]
+}
+
 export interface TutorCertificationVO {
   id: number
   userId: number
@@ -22,8 +29,11 @@ export interface TutorCertificationAuditReqVO {
   rejectReason?: string
 }
 
-export const getTutorCertificationPage = async (params: any) => {
-  return await request.get({ url: `/tutor/certification/page`, params })
+export const getTutorCertificationPage = async (params: TutorCertificationPageReqVO) => {
+  return await request.get<PageResult<TutorCertificationVO[]>>({
+    url: `/tutor/certification/page`,
+    params
+  })
 }
 
 export const auditTutorCertification = async (data: TutorCertificationAuditReqVO) => {

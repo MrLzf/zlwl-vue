@@ -1,6 +1,17 @@
 import request from '@/config/axios'
 import { TutorPublishAuditReqVO } from '@/api/tutor/demand'
 
+export interface TutorResumePageReqVO extends PageParam {
+  userId?: number | string
+  title?: string
+  cityCode?: string
+  subject?: string
+  teachMode?: number
+  freeTrialEnabled?: boolean
+  status?: number
+  auditStatus?: number
+}
+
 export interface TutorTeacherResumeVO {
   id: number
   userId: number
@@ -32,8 +43,8 @@ export interface TutorTeacherResumeVO {
   createTime?: Date
 }
 
-export const getTutorResumePage = async (params: any) => {
-  return await request.get({ url: `/tutor/resume/page`, params })
+export const getTutorResumePage = async (params: TutorResumePageReqVO) => {
+  return await request.get<PageResult<TutorTeacherResumeVO[]>>({ url: `/tutor/resume/page`, params })
 }
 
 export const auditTutorResume = async (data: TutorPublishAuditReqVO) => {

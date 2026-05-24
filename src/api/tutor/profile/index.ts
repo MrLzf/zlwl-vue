@@ -1,5 +1,15 @@
 import request from '@/config/axios'
 
+export interface TutorProfilePageReqVO extends PageParam {
+  userId?: number | string
+  role?: number
+  cityCode?: string
+  certificationStatus?: number
+  mobile?: string
+  nickname?: string
+  createTime?: string[]
+}
+
 export interface TutorUserProfileVO {
   id: number
   userId: number
@@ -18,6 +28,6 @@ export interface TutorUserProfileVO {
   createTime?: Date
 }
 
-export const getTutorProfilePage = async (params: any) => {
-  return await request.get({ url: `/tutor/profiles/page`, params })
+export const getTutorProfilePage = async (params: TutorProfilePageReqVO) => {
+  return await request.get<PageResult<TutorUserProfileVO[]>>({ url: `/tutor/profiles/page`, params })
 }

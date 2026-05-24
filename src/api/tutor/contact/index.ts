@@ -1,5 +1,13 @@
 import request from '@/config/axios'
 
+export interface TutorContactPageReqVO extends PageParam {
+  viewerUserId?: number | string
+  targetType?: string
+  targetId?: number | string
+  targetUserId?: number | string
+  createTime?: string[]
+}
+
 export interface TutorContactVO {
   id: number
   viewerUserId: number
@@ -17,6 +25,6 @@ export interface TutorContactVO {
   createTime?: Date
 }
 
-export const getTutorContactPage = async (params: any) => {
-  return await request.get({ url: `/tutor/contacts/page`, params })
+export const getTutorContactPage = async (params: TutorContactPageReqVO) => {
+  return await request.get<PageResult<TutorContactVO[]>>({ url: `/tutor/contacts/page`, params })
 }

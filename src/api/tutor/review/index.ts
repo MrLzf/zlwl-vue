@@ -1,5 +1,14 @@
 import request from '@/config/axios'
 
+export interface TutorReviewPageReqVO extends PageParam {
+  matchId?: number | string
+  reviewerUserId?: number | string
+  targetUserId?: number | string
+  rating?: number
+  status?: number
+  createTime?: string[]
+}
+
 export interface TutorReviewVO {
   id: number
   matchId: number
@@ -13,8 +22,8 @@ export interface TutorReviewVO {
   createTime?: Date
 }
 
-export const getTutorReviewPage = async (params: any) => {
-  return await request.get({ url: `/tutor/reviews/page`, params })
+export const getTutorReviewPage = async (params: TutorReviewPageReqVO) => {
+  return await request.get<PageResult<TutorReviewVO[]>>({ url: `/tutor/reviews/page`, params })
 }
 
 export const updateTutorReviewStatus = async (id: number, status: number) => {

@@ -194,7 +194,11 @@ const resetQuery = () => {
 }
 
 const previewImage = (url: string) => {
-  createImageViewer({ urlList: [url] })
+  if (/\.(png|jpe?g|gif|webp|bmp)$/i.test(url)) {
+    createImageViewer({ urlList: [url] })
+    return
+  }
+  window.open(url, '_blank')
 }
 
 const openDetail = (row: CertificationApi.TutorCertificationVO) => {

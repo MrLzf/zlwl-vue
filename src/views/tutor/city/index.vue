@@ -144,14 +144,19 @@ const resetQuery = () => {
 }
 
 const handleUpdate = async (row: CityApi.TutorCityVO) => {
-  await CityApi.updateTutorCity({
-    id: row.id,
-    opened: row.opened,
-    hot: row.hot,
-    sort: row.sort,
-    status: row.status
-  })
-  message.success('更新成功')
+  try {
+    await CityApi.updateTutorCity({
+      id: row.id,
+      opened: row.opened,
+      hot: row.hot,
+      sort: row.sort,
+      status: row.status
+    })
+    message.success('更新成功')
+  } catch (error) {
+    await getList()
+    throw error
+  }
 }
 
 onMounted(() => {

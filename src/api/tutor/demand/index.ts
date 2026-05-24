@@ -1,5 +1,16 @@
 import request from '@/config/axios'
 
+export interface TutorDemandPageReqVO extends PageParam {
+  userId?: number | string
+  title?: string
+  cityCode?: string
+  subject?: string
+  grade?: string
+  teachMode?: number
+  status?: number
+  auditStatus?: number
+}
+
 export interface TutorDemandVO {
   id: number
   userId: number
@@ -36,8 +47,8 @@ export interface TutorPublishAuditReqVO {
   rejectReason?: string
 }
 
-export const getTutorDemandPage = async (params: any) => {
-  return await request.get({ url: `/tutor/demand/page`, params })
+export const getTutorDemandPage = async (params: TutorDemandPageReqVO) => {
+  return await request.get<PageResult<TutorDemandVO[]>>({ url: `/tutor/demand/page`, params })
 }
 
 export const auditTutorDemand = async (data: TutorPublishAuditReqVO) => {
