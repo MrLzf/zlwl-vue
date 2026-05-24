@@ -22,6 +22,12 @@
           <el-option label="未开通" :value="false" />
         </el-select>
       </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="全部" clearable class="!w-160px">
+          <el-option label="正常" :value="0" />
+          <el-option label="停用" :value="1" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -68,9 +74,16 @@
       </el-table-column>
       <el-table-column label="状态" align="center" width="120">
         <template #default="{ row }">
-          <el-tag :type="row.status === 0 ? 'success' : 'info'">
-            {{ row.status === 0 ? '正常' : '停用' }}
-          </el-tag>
+          <el-switch
+            v-model="row.status"
+            v-hasPermi="['tutor:city:update']"
+            :active-value="0"
+            :inactive-value="1"
+            active-text="正常"
+            inactive-text="停用"
+            inline-prompt
+            @change="handleUpdate(row)"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -95,7 +108,8 @@ const list = ref<CityApi.TutorCityVO[]>([])
 const queryFormRef = ref()
 const queryParams = reactive({
   keyword: '',
-  opened: undefined as boolean | undefined
+  opened: undefined as boolean | undefined,
+  status: undefined as number | undefined
 })
 
 const filteredList = computed(() => {
@@ -107,7 +121,8 @@ const filteredList = computed(() => {
       item.code.toLowerCase().includes(keyword) ||
       item.pinyin.toLowerCase().includes(keyword)
     const matchOpened = queryParams.opened === undefined || item.opened === queryParams.opened
-    return matchKeyword && matchOpened
+    const matchStatus = queryParams.status === undefined || item.status === queryParams.status
+    return matchKeyword && matchOpened && matchStatus
   })
 })
 

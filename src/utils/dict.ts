@@ -168,6 +168,16 @@ export enum DICT_TYPE {
   MEMBER_POINT_BIZ_TYPE = 'member_point_biz_type', // 积分的业务类型
   MEMBER_EXPERIENCE_BIZ_TYPE = 'member_experience_biz_type', // 会员经验业务类型
 
+  // ========== Tutor 家教模块 ==========
+  TUTOR_USER_ROLE = 'tutor_user_role',
+  TUTOR_SUBJECT = 'tutor_subject',
+  TUTOR_GRADE = 'tutor_grade',
+  TUTOR_TEACH_MODE = 'tutor_teach_mode',
+  TUTOR_AUDIT_STATUS = 'tutor_audit_status',
+  TUTOR_PUBLISH_STATUS = 'tutor_publish_status',
+  TUTOR_MATCH_STATUS = 'tutor_match_status',
+  TUTOR_POINT_BIZ_TYPE = 'tutor_point_biz_type',
+
   // ========== MALL - 商品模块 ==========
   PRODUCT_SPU_STATUS = 'product_spu_status', //商品状态
 

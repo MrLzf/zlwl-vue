@@ -16,12 +16,12 @@ export interface TutorCityVO {
 
 // 查询家教城市列表
 export const getTutorCityList = async () => {
-  return await request.get({ url: `/tutor/city/list` })
+  return await request.get<TutorCityVO[]>({ url: `/tutor/city/list` })
 }
 
 // 更新家教城市运营状态
 export const updateTutorCity = async (
   data: Pick<TutorCityVO, 'id' | 'opened' | 'hot' | 'sort' | 'status'>
 ) => {
-  return await request.put({ url: `/tutor/city/update`, data })
+  return await request.put<boolean>({ url: `/tutor/city/update`, data })
 }
