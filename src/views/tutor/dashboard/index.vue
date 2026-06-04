@@ -20,12 +20,35 @@
       <el-descriptions-item label="简历审核">{{ summary.resumePendingCount }}</el-descriptions-item>
     </el-descriptions>
   </ContentWrap>
+
+  <el-row :gutter="16">
+    <el-col :xs="24" :lg="14">
+      <ContentWrap>
+        <div class="mb-12px flex items-center justify-between">
+          <span class="font-bold">运营趋势</span>
+          <el-radio-group v-model="trendDays" size="small" @change="getCharts">
+            <el-radio-button :label="7">7 天</el-radio-button>
+            <el-radio-button :label="30">30 天</el-radio-button>
+          </el-radio-group>
+        </div>
+        <Echart :height="320" :options="trendOptions" />
+      </ContentWrap>
+    </el-col>
+    <el-col :xs="24" :lg="10">
+      <ContentWrap>
+        <div class="mb-12px font-bold">转化漏斗</div>
+        <Echart :height="320" :options="funnelOptions" />
+      </ContentWrap>
+    </el-col>
+  </el-row>
 </template>
 
 <script setup lang="ts" name="TutorDashboard">
+import { EChartsOption } from 'echarts'
 import * as DashboardApi from '@/api/tutor/dashboard'
 
 const loading = ref(true)
+const trendDays = ref(7)
 const summary = ref<DashboardApi.TutorDashboardSummaryVO>({
   userCount: 0,
   parentCount: 0,
@@ -88,6 +111,35 @@ const cards = computed(() => [
   }
 ])
 
+const trendOptions = reactive<EChartsOption>({
+  tooltip: { trigger: 'axis' },
+  legend: { data: ['用户', '发布', '联系', '匹配'] },
+  grid: { left: 24, right: 16, bottom: 24, containLabel: true },
+  xAxis: { type: 'category', data: [] },
+  yAxis: { type: 'value' },
+  series: [
+    { name: '用户', type: 'line', smooth: true, data: [] },
+    { name: '发布', type: 'line', smooth: true, data: [] },
+    { name: '联系', type: 'line', smooth: true, data: [] },
+    { name: '匹配', type: 'line', smooth: true, data: [] }
+  ]
+})
+
+const funnelOptions = reactive<EChartsOption>({
+  tooltip: { trigger: 'item' },
+  series: [
+    {
+      name: '转化漏斗',
+      type: 'funnel',
+      left: '8%',
+      top: 24,
+      bottom: 24,
+      width: '84%',
+      data: []
+    }
+  ]
+})
+
 const getSummary = async () => {
   loading.value = true
   try {
@@ -97,7 +149,21 @@ const getSummary = async () => {
   }
 }
 
+const getCharts = async () => {
+  const [trend, funnel] = await Promise.all([
+    DashboardApi.getTrend(trendDays.value),
+    DashboardApi.getFunnel()
+  ])
+  ;(trendOptions.xAxis as any).data = trend.map((item) => item.date)
+  ;(trendOptions.series as any)[0].data = trend.map((item) => item.users)
+  ;(trendOptions.series as any)[1].data = trend.map((item) => item.publishes)
+  ;(trendOptions.series as any)[2].data = trend.map((item) => item.contacts)
+  ;(trendOptions.series as any)[3].data = trend.map((item) => item.matches)
+  ;(funnelOptions.series as any)[0].data = funnel
+}
+
 onMounted(() => {
   getSummary()
+  getCharts()
 })
 </script>

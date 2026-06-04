@@ -9,6 +9,9 @@ export interface TutorCityVO {
   opened: boolean
   hot: boolean
   serviceConfig?: string
+  auditSlaHours?: number
+  defaultRadiusKm?: number
+  contactPointCost?: number
   sort: number
   status: number
   createTime?: Date
@@ -24,4 +27,10 @@ export const updateTutorCity = async (
   data: Pick<TutorCityVO, 'id' | 'opened' | 'hot' | 'sort' | 'status'>
 ) => {
   return await request.put<boolean>({ url: `/tutor/city/update`, data })
+}
+
+export const updateTutorCityRules = async (
+  data: Pick<TutorCityVO, 'id' | 'auditSlaHours' | 'defaultRadiusKm' | 'contactPointCost'>
+) => {
+  return await request.put<boolean>({ url: `/tutor/city/rules`, data })
 }

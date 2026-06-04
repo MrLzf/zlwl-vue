@@ -86,6 +86,21 @@
           />
         </template>
       </el-table-column>
+      <el-table-column label="审核 SLA" align="center" width="130">
+        <template #default="{ row }">
+          <el-input-number v-model="row.auditSlaHours" :min="1" :max="168" @change="handleRulesUpdate(row)" />
+        </template>
+      </el-table-column>
+      <el-table-column label="默认半径" align="center" width="130">
+        <template #default="{ row }">
+          <el-input-number v-model="row.defaultRadiusKm" :min="1" :max="50" @change="handleRulesUpdate(row)" />
+        </template>
+      </el-table-column>
+      <el-table-column label="扣分规则" align="center" width="130">
+        <template #default="{ row }">
+          <el-input-number v-model="row.contactPointCost" :min="0" :max="999" @change="handleRulesUpdate(row)" />
+        </template>
+      </el-table-column>
       <el-table-column
         label="创建时间"
         align="center"
@@ -153,6 +168,21 @@ const handleUpdate = async (row: CityApi.TutorCityVO) => {
       status: row.status
     })
     message.success('更新成功')
+  } catch (error) {
+    await getList()
+    throw error
+  }
+}
+
+const handleRulesUpdate = async (row: CityApi.TutorCityVO) => {
+  try {
+    await CityApi.updateTutorCityRules({
+      id: row.id,
+      auditSlaHours: row.auditSlaHours,
+      defaultRadiusKm: row.defaultRadiusKm,
+      contactPointCost: row.contactPointCost
+    })
+    message.success('城市规则已更新')
   } catch (error) {
     await getList()
     throw error
