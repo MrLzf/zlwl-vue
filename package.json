@@ -8,7 +8,7 @@
     "i": "pnpm install",
     "dev": "vite --mode env.local",
     "dev-server": "vite --mode dev",
-    "ts:check": "vue-tsc --noEmit",
+    "ts:check": "node --max_old_space_size=8192 ./node_modules/vue-tsc/bin/vue-tsc.js --noEmit",
     "build:local": "node --max_old_space_size=4096 ./node_modules/vite/bin/vite.js build",
     "build:dev": "node --max_old_space_size=4096 ./node_modules/vite/bin/vite.js build --mode dev",
     "build:test": "node --max_old_space_size=4096 ./node_modules/vite/bin/vite.js build --mode test",
@@ -156,6 +156,7 @@
   },
   "homepage": "https://gitee.com/yudaocode/yudao-ui-admin-vue3",
   "web-types": "./web-types.json",
+  "packageManager": "pnpm@8.15.9",
   "engines": {
     "node": ">= 16.0.0",
     "pnpm": ">=8.6.0"

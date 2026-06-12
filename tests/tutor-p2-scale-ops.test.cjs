@@ -23,6 +23,10 @@ const dashboardView = read('src/views/tutor/dashboard/index.vue');
 assert.ok(dashboardView.includes('<Echart'), 'dashboard view should render ECharts');
 assert.ok(dashboardView.includes('趋势'), 'dashboard should include trend chart copy');
 assert.ok(dashboardView.includes('漏斗'), 'dashboard should include funnel chart copy');
+assert.ok(
+  dashboardView.includes('}) as EChartsOption'),
+  'dashboard ECharts options should follow the local cast pattern used by admin charts'
+);
 
 const cityView = read('src/views/tutor/city/index.vue');
 assert.ok(cityView.includes('审核 SLA'), 'city admin should expose audit SLA rule');

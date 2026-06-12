@@ -111,7 +111,7 @@ const cards = computed(() => [
   }
 ])
 
-const trendOptions = reactive<EChartsOption>({
+const trendOptions = reactive({
   tooltip: { trigger: 'axis' },
   legend: { data: ['用户', '发布', '联系', '匹配'] },
   grid: { left: 24, right: 16, bottom: 24, containLabel: true },
@@ -123,9 +123,9 @@ const trendOptions = reactive<EChartsOption>({
     { name: '联系', type: 'line', smooth: true, data: [] },
     { name: '匹配', type: 'line', smooth: true, data: [] }
   ]
-})
+}) as EChartsOption
 
-const funnelOptions = reactive<EChartsOption>({
+const funnelOptions = reactive({
   tooltip: { trigger: 'item' },
   series: [
     {
@@ -138,7 +138,7 @@ const funnelOptions = reactive<EChartsOption>({
       data: []
     }
   ]
-})
+}) as EChartsOption
 
 const getSummary = async () => {
   loading.value = true
