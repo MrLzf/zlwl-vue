@@ -1,0 +1,35 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "types": [],
+    "paths": {
+      "@/config/axios": [
+        "types/typecheck/axios-shim.d.ts"
+      ],
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/api/tutor/**/*.ts",
+    "src/views/tutor/**/*.vue",
+    "types/env.d.ts",
+    "types/global.d.ts",
+    "types/router.d.ts",
+    "src/types/auto-imports.d.ts",
+    "types/typecheck/**/*.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "target",
+    "node_modules"
+  ],
+  "vueCompilerOptions": {
+    "strictTemplates": false,
+    "skipTemplateCodegen": true
+  }
+}
