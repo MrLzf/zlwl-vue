@@ -43,8 +43,32 @@ export interface TutorTeacherResumeVO {
   createTime?: Date
 }
 
+export interface TutorTeacherEntryReqVO {
+  mobile: string
+  title: string
+  cityCode: string
+  subjects: string
+  teachModes: string
+  hourlyPrice: number
+  educationLevel: string
+  schoolName?: string
+  major?: string
+  hasTeacherCertificate?: boolean
+  serviceRadiusKm: number
+  freeTrialEnabled?: boolean
+  freeTrialMinutes?: number
+  teachingYears?: number
+  intro: string
+  longitude?: number
+  latitude?: number
+}
+
 export const getTutorResumePage = async (params: TutorResumePageReqVO) => {
   return await request.get<PageResult<TutorTeacherResumeVO[]>>({ url: `/tutor/resume/page`, params })
+}
+
+export const createTutorTeacherEntry = async (data: TutorTeacherEntryReqVO) => {
+  return await request.post<TutorTeacherResumeVO>({ url: `/tutor/resume/create`, data })
 }
 
 export const auditTutorResume = async (data: TutorPublishAuditReqVO) => {

@@ -93,6 +93,16 @@
   </ContentWrap>
 
   <ContentWrap>
+    <el-row class="mb-10px">
+      <el-button
+        v-hasPermi="['tutor:resume:create']"
+        type="primary"
+        plain
+        @click="openEntryDialog"
+      >
+        <Icon icon="ep:plus" class="mr-5px" /> 录入教师
+      </el-button>
+    </el-row>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="编号" align="center" prop="id" width="90" />
       <el-table-column label="标题" align="center" prop="title" min-width="180" />
@@ -213,13 +223,185 @@
       </el-descriptions-item>
     </el-descriptions>
   </el-dialog>
+
+  <el-dialog v-model="entryDialogVisible" title="录入教师" width="760px">
+    <el-form
+      ref="entryFormRef"
+      :model="entryForm"
+      :rules="entryRules"
+      label-width="108px"
+      v-loading="entryLoading"
+    >
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="手机号" prop="mobile">
+            <el-input v-model="entryForm.mobile" placeholder="请输入教师手机号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="城市" prop="cityCode">
+            <el-select
+              v-model="entryForm.cityCode"
+              placeholder="请选择开通城市"
+              filterable
+              clearable
+              class="!w-100%"
+            >
+              <el-option
+                v-for="city in openedCityList"
+                :key="city.code"
+                :label="`${city.name} / ${city.code}`"
+                :value="city.code"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item label="简历标题" prop="title">
+        <el-input v-model="entryForm.title" placeholder="例如：985硕士数学老师" />
+      </el-form-item>
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="科目" prop="subjects">
+            <el-select
+              v-model="entryForm.subjects"
+              multiple
+              filterable
+              placeholder="请选择科目"
+              class="!w-100%"
+            >
+              <el-option
+                v-for="dict in getStrDictOptions(DICT_TYPE.TUTOR_SUBJECT)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="授课模式" prop="teachModes">
+            <el-select
+              v-model="entryForm.teachModes"
+              multiple
+              placeholder="请选择授课模式"
+              class="!w-100%"
+            >
+              <el-option
+                v-for="dict in getIntDictOptions(DICT_TYPE.TUTOR_TEACH_MODE)"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="时薪" prop="hourlyPrice">
+            <el-input-number
+              v-model="entryForm.hourlyPrice"
+              :min="0"
+              :max="99999"
+              class="!w-100%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="服务半径" prop="serviceRadiusKm">
+            <el-input-number
+              v-model="entryForm.serviceRadiusKm"
+              :min="0"
+              :max="200"
+              class="!w-100%"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="最高学历" prop="educationLevel">
+            <el-input v-model="entryForm.educationLevel" placeholder="例如：硕士" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="教龄" prop="teachingYears">
+            <el-input-number
+              v-model="entryForm.teachingYears"
+              :min="0"
+              :max="80"
+              class="!w-100%"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="学校" prop="schoolName">
+            <el-input v-model="entryForm.schoolName" placeholder="例如：浙江大学" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="专业" prop="major">
+            <el-input v-model="entryForm.major" placeholder="例如：数学" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <el-form-item label="教师资格证" prop="hasTeacherCertificate">
+            <el-switch
+              v-model="entryForm.hasTeacherCertificate"
+              active-text="有"
+              inactive-text="无"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="支持试课" prop="freeTrialEnabled">
+            <el-switch
+              v-model="entryForm.freeTrialEnabled"
+              active-text="支持"
+              inactive-text="不支持"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item v-if="entryForm.freeTrialEnabled" label="试课时长" prop="freeTrialMinutes">
+        <el-input-number
+          v-model="entryForm.freeTrialMinutes"
+          :min="0"
+          :max="240"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="教学介绍" prop="intro">
+        <el-input
+          v-model="entryForm.intro"
+          type="textarea"
+          :rows="4"
+          maxlength="1000"
+          show-word-limit
+          placeholder="请输入教学经验、教学风格和优势"
+        />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="entryDialogVisible = false">取消</el-button>
+      <el-button type="primary" :loading="entryLoading" @click="submitTeacherEntry">
+        确认录入
+      </el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts" name="TutorResume">
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, type FormRules } from 'element-plus'
 import { DICT_TYPE, getIntDictOptions, getStrDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import * as ResumeApi from '@/api/tutor/resume'
+import * as CityApi from '@/api/tutor/city'
 
 const enum AuditStatus {
   WAITING = 10,
@@ -238,6 +420,10 @@ const list = ref<ResumeApi.TutorTeacherResumeVO[]>([])
 const queryFormRef = ref()
 const detailVisible = ref(false)
 const currentRow = ref<ResumeApi.TutorTeacherResumeVO>()
+const entryDialogVisible = ref(false)
+const entryLoading = ref(false)
+const entryFormRef = ref()
+const cityList = ref<CityApi.TutorCityVO[]>([])
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -250,6 +436,50 @@ const queryParams = reactive({
   status: undefined,
   auditStatus: undefined
 })
+const entryForm = reactive({
+  mobile: '',
+  title: '',
+  cityCode: undefined as string | undefined,
+  subjects: [] as string[],
+  teachModes: [] as number[],
+  hourlyPrice: undefined as number | undefined,
+  educationLevel: '',
+  schoolName: '',
+  major: '',
+  hasTeacherCertificate: false,
+  serviceRadiusKm: 10,
+  freeTrialEnabled: false,
+  freeTrialMinutes: undefined as number | undefined,
+  teachingYears: undefined as number | undefined,
+  intro: ''
+})
+const entryRules: FormRules = {
+  mobile: [{ required: true, message: '手机号不能为空', trigger: 'blur' }],
+  title: [{ required: true, message: '简历标题不能为空', trigger: 'blur' }],
+  cityCode: [{ required: true, message: '请选择城市', trigger: 'change' }],
+  subjects: [{ type: 'array', required: true, min: 1, message: '请选择科目', trigger: 'change' }],
+  teachModes: [
+    { type: 'array', required: true, min: 1, message: '请选择授课模式', trigger: 'change' }
+  ],
+  hourlyPrice: [{ required: true, message: '时薪不能为空', trigger: 'blur' }],
+  educationLevel: [{ required: true, message: '最高学历不能为空', trigger: 'blur' }],
+  serviceRadiusKm: [{ required: true, message: '服务半径不能为空', trigger: 'blur' }],
+  freeTrialMinutes: [
+    {
+      validator: (_rule, value, callback) => {
+        if (entryForm.freeTrialEnabled && (value === undefined || value === null)) {
+          callback(new Error('试课时长不能为空'))
+          return
+        }
+        callback()
+      },
+      trigger: 'blur'
+    }
+  ],
+  intro: [{ required: true, message: '教学介绍不能为空', trigger: 'blur' }]
+}
+
+const openedCityList = computed(() => cityList.value.filter((city) => city.opened))
 
 const getList = async () => {
   loading.value = true
@@ -275,6 +505,63 @@ const resetQuery = () => {
 const openDetail = (row: ResumeApi.TutorTeacherResumeVO) => {
   currentRow.value = row
   detailVisible.value = true
+}
+
+const resetEntryForm = () => {
+  entryForm.mobile = ''
+  entryForm.title = ''
+  entryForm.cityCode = undefined
+  entryForm.subjects = []
+  entryForm.teachModes = []
+  entryForm.hourlyPrice = undefined
+  entryForm.educationLevel = ''
+  entryForm.schoolName = ''
+  entryForm.major = ''
+  entryForm.hasTeacherCertificate = false
+  entryForm.serviceRadiusKm = 10
+  entryForm.freeTrialEnabled = false
+  entryForm.freeTrialMinutes = undefined
+  entryForm.teachingYears = undefined
+  entryForm.intro = ''
+  entryFormRef.value?.clearValidate()
+}
+
+const openEntryDialog = async () => {
+  resetEntryForm()
+  entryDialogVisible.value = true
+  if (!cityList.value.length) {
+    cityList.value = await CityApi.getTutorCityList()
+  }
+}
+
+const submitTeacherEntry = async () => {
+  await entryFormRef.value.validate()
+  const payload: ResumeApi.TutorTeacherEntryReqVO = {
+    mobile: entryForm.mobile,
+    title: entryForm.title,
+    cityCode: entryForm.cityCode!,
+    subjects: entryForm.subjects.join(','),
+    teachModes: entryForm.teachModes.join(','),
+    hourlyPrice: entryForm.hourlyPrice!,
+    educationLevel: entryForm.educationLevel,
+    schoolName: entryForm.schoolName || undefined,
+    major: entryForm.major || undefined,
+    hasTeacherCertificate: entryForm.hasTeacherCertificate,
+    serviceRadiusKm: entryForm.serviceRadiusKm,
+    freeTrialEnabled: entryForm.freeTrialEnabled,
+    freeTrialMinutes: entryForm.freeTrialEnabled ? entryForm.freeTrialMinutes : undefined,
+    teachingYears: entryForm.teachingYears,
+    intro: entryForm.intro
+  }
+  entryLoading.value = true
+  try {
+    await ResumeApi.createTutorTeacherEntry(payload)
+    message.success('教师录入成功')
+    entryDialogVisible.value = false
+    await getList()
+  } finally {
+    entryLoading.value = false
+  }
 }
 
 const handleAudit = async (row: ResumeApi.TutorTeacherResumeVO, auditStatus: AuditStatus) => {
